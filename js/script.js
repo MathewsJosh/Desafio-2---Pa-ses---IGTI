@@ -31,12 +31,12 @@ window.addEventListener("load", () => {
 
 //Método fetch comum
 /* function fetchCountries() {
-    fetch("http://restcountries.eu/rest/v2/all")
-        .then(res => res.json())
-        .then(json => {
-            (allCountries = json);
-            console.log(allCountries);
-        });
+	fetch("http://restcountries.eu/rest/v2/all")
+		.then(res => res.json())
+		.then(json => {
+			(allCountries = json);
+			console.log(allCountries);
+		});
 } */
 
 //Método Async/await
@@ -52,12 +52,12 @@ async function fetchCountries() {
       name: translations.pt,
       population,
       formattedPopulation: formatNumber(population),
-      flag,
+      flag
     };
     /* id:country.numericCode,
-            name: country.translations.pt,
-            population:country.population,
-            flag: country.flag */
+			name: country.translations.pt,
+			population:country.population,
+			flag: country.flag */
     //flag:flag = Quando repete, você pode eliminar um
     //allCountries = json;
   });
@@ -70,6 +70,7 @@ function render() {
   renderCountryList();
   renderFavorites();
   renderSummary();
+  handleCountryButtons();
 }
 
 function renderCountryList() {
@@ -77,22 +78,22 @@ function renderCountryList() {
 
   allCountries.forEach((country) => {
     const { name, flag, id, population, formattedPopulation } = country;
-    //Tag a cria um botao quando vc está usando o materialize css, ler documentação!
+    //Tag a cria um botão quando vc está usando o materialize CSS, ler documentação!
     const countryHTML = `
-        <div class="country">
-            <div>
-                <a id="${id}" class="waves-effect waves-light btn">+</a>
-            </div>
-            <div>
-                <img src="${flag}" alt="${name}"/>
-            </div>
-            <div>
-                <ul>
-                    <li>${name}</li>
-                    <li>${population}</li>
-                </ul>
-            </div>
-        </div>`; //Template Literals (sinal de crase)
+		<div class="country">
+			<div>
+				<a id="${id}" class="waves-effect waves-light btn">+</a>
+			</div>
+			<div>
+				<img src="${flag}" alt="${name}"/>
+			</div>
+			<div>
+				<ul>
+					<li>${name}</li>
+					<li>${formattedPopulation}</li>
+				</ul>
+			</div>
+		</div>`; //Template Literals (sinal de crase)
     countriesHTML += countryHTML;
   });
   countriesHTML += "</div>";
@@ -106,20 +107,20 @@ function renderFavorites() {
   favoriteCountries.forEach((country) => {
     const { name, flag, id, population, formattedPopulation } = country;
     const favoriteCountryHTML = `
-        <div class="country">
-            <div>
-                <a id="${id}" class="waves-effect waves-light btn red darken-4">-</a>
-            </div>
-            <div>
-                <img src="${flag}" alt="${name}"/>
-            </div>
-            <div>
-                <ul>
-                    <li>${name}</li>
-                    <li>${population}</li>
-                </ul>
-            </div>
-        </div>`; //Template Literals (sinal de crase)
+		<div class="country">
+			<div>
+				<a id="${id}" class="waves-effect waves-light btn red darken-4">-</a>
+			</div>
+			<div>
+				<img src="${flag}" alt="${name}"/>
+			</div>
+			<div>
+				<ul>
+					<li>${name}</li>
+					<li>${formattedPopulation}</li>
+				</ul>
+			</div>
+		</div>`; //Template Literals (sinal de crase)
     favoritesHTML += favoriteCountryHTML;
   });
 
@@ -139,9 +140,46 @@ function renderSummary() {
     return accumulator + current.population;
   }, 0);
 
-  totalPopulationList.textContent = totalPopulation;
-  totalPopulationFavorites.textContent = totalFavorites;
+  totalPopulationList.textContent = formatNumber(totalPopulation);
+  totalPopulationFavorites.textContent = formatNumber(totalFavorites);
 }
+
+function handleCountryButtons() {
+  const countryButtons = Array.from(tabCountries.querySelectorAll(".btn"));
+  const favoriteButtons = Array.from(tabFavorites.querySelectorAll(".btn"));
+
+  countryButtons.forEach((button) => {
+    button.addEventListener("click", () => addToFavorites(button.id));
+  });
+  favoriteButtons.forEach((button) => {
+    button.addEventListener("click", () => removeFromFavorites(button.id));
+  });
+}
+
+function addToFavorites(id) {
+  const countryToAdd = allCountries.find((button) => button.id === id);
+
+  favoriteCountries = [...favoriteCountries, countryToAdd];
+  favoriteCountries.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
+  allCountries = allCountries.filter((country) => country.id !== id);
+  render();
+}
+
+function removeFromFavorites(id) {
+	const countryToRemove = favoriteCountries.find(country => country.id === id);
+  
+	allCountries = [...allCountries, countryToRemove];
+  
+	allCountries.sort((a, b) => {
+	  return a.name.localeCompare(b.name);
+	});
+  
+	favoriteCountries = favoriteCountries.filter(country => country.id !== id);
+  
+	render();
+  }
 
 function formatNumber(number) {
   return numberFormat.format(number);
