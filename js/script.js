@@ -21,9 +21,7 @@ window.addEventListener("load", () => {
   countCountries = document.querySelector("#countCountries");
   countFavorites = document.querySelector("#countFavorites");
   totalPopulationList = document.querySelector("#totalPopulationList");
-  totalPopulationFavorites = document.querySelector(
-    "#totalPopulationFavorites"
-  );
+  totalPopulationFavorites = document.querySelector("#totalPopulationFavorites");
   numberFormat = Intl.NumberFormat("pt-BR");
 
   fetchCountries();
